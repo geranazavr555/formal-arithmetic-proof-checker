@@ -69,6 +69,12 @@ bool add_line(string const &s)
     auto line = parse_expression(s);
     //print(line);
 
+    if (info_by_expr_hash.find(line->hash) != info_by_expr_hash.end())
+    {
+        delete line;
+        return true;
+    }
+
     if (line->type == Expression::Type::IMPLICATION)
     {
         a_impl_b_by_b[line->exprs[1]->hash].push_back(line);
@@ -111,6 +117,7 @@ bool add_line(string const &s)
             info.index = lines.size() + 1;
             info_by_expr_hash[line->hash] = info;
             lines.push_back(line);
+            a_impl_b_by_b.erase(line->hash);
             return true;
         }
     }
